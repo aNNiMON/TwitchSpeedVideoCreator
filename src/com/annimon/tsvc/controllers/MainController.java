@@ -1,5 +1,7 @@
 package com.annimon.tsvc.controllers;
 
+import com.annimon.tsvc.ExceptionHandler;
+import com.annimon.tsvc.tasks.PastBroadcastsTask;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
@@ -19,13 +21,17 @@ public class MainController implements Initializable {
     @FXML
     private void handleShowBroadcasts(ActionEvent event) {
         final String channel = tfChannel.getText();
-        
         System.out.println(channel);
+        
+        try {
+            new PastBroadcastsTask().process(channel);
+        } catch (Exception ex) {
+            ExceptionHandler.log(ex);
+        }
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnShowBroadcasts.disableProperty().bind(Bindings.isEmpty(tfChannel.textProperty()));
-        
     }    
 }
