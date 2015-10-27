@@ -20,7 +20,15 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </HBox>
-      <JFXProgressBar fx:id="progressBar" styleClass="progress_bar" VBox.vgrow="NEVER" visible="false" />
-      <TilePane alignment="TOP_CENTER" VBox.vgrow="ALWAYS" />
+      <JFXProgressBar fx:id="progressBar" styleClass="progress_bar" visible="false" VBox.vgrow="NEVER" />
+      <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+          <content>
+              <TilePane fx:id="broadcastsPane" alignment="TOP_CENTER" hgap="20.0" vgap="20.0">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+              </TilePane>
+          </content>
+      </ScrollPane>
    </children>
 </VBox>
