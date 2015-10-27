@@ -8,18 +8,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="220.0" prefWidth="378.0" styleClass="main_box" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.annimon.tsvc.controllers.MainController">
+<VBox fx:id="root" prefHeight="220.0" prefWidth="378.0" styleClass="main_box" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.annimon.tsvc.controllers.MainController">
    <children>
       <HBox alignment="CENTER" fillHeight="false" spacing="10.0" styleClass="channel_box">
          <children>
             <Label minWidth="-Infinity" text="Channel:" />
             <JFXTextField fx:id="tfChannel" minWidth="80.0" HBox.hgrow="SOMETIMES" />
-            <JFXButton fx:id="btnShowBroadcasts" minWidth="-Infinity" text="Show broadcasts" HBox.hgrow="NEVER" onAction="#handleShowBroadcasts" />
+            <JFXButton fx:id="btnShowBroadcasts" minWidth="-Infinity" onAction="#handleShowBroadcasts" text="Show broadcasts" HBox.hgrow="NEVER" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </HBox>
+      <JFXProgressBar fx:id="progressBar" styleClass="progress_bar" VBox.vgrow="NEVER" visible="false" />
       <TilePane alignment="TOP_CENTER" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>
