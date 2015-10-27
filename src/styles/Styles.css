@@ -1,0 +1,19 @@
+.main_box {
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+}
+
+.channel_box {
+    -fx-background-color: #fAFAFA;
+}
+
+.label {
+    -fx-text-fill: #6441A5;
+}
+
+
+.jfx-button {
+    -fx-button-type: FLAT;
+    -fx-background-color: #6441A5;
+    -fx-text-fill: WHITE;
+}
