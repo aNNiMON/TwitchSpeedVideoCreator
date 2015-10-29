@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="root" prefHeight="220.0" prefWidth="378.0" styleClass="main_box" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.annimon.tsvc.controllers.MainController">
+<VBox fx:id="root" prefHeight="600" prefWidth="800" styleClass="main_box" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.annimon.tsvc.controllers.MainController">
    <children>
       <HBox alignment="CENTER" fillHeight="false" spacing="10.0" styleClass="channel_box">
          <children>

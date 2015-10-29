@@ -25,6 +25,10 @@
     -fx-font-style: italic;
     -fx-text-fill: #666;
 }
+.card .date, .card .duration {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666;
+}
 .card .preview {
     -fx-padding: 5px;
     -fx-background-size: 100% 100px;
@@ -33,12 +37,19 @@
 .card .jfx-button {
     -fx-button-type: FLAT;
     -fx-background-color: white;
-    -fx-text-fill: darkgray;
+    -fx-text-fill: #322;
 }
 
-
+.scroll-bar:vertical .thumb {
+ -fx-background-color: #6441A5;
+ -fx-background-insets: 0 4 0 4;
+ -fx-background-radius: 2em;
+}
 .jfx-button {
     -fx-button-type: FLAT;
     -fx-background-color: #6441A5;
     -fx-text-fill: WHITE;
+}
+.jfx-progress-bar .bar {
+    -fx-stroke: #6441A5;
 }

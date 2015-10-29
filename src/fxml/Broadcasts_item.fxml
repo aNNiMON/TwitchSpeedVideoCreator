@@ -12,8 +12,23 @@
 <VBox fx:id="cardRoot" alignment="TOP_CENTER" prefHeight="136.0" prefWidth="246.0" styleClass="card" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="lblTitle" alignment="CENTER" styleClass="title" text="Label" />
-      <Label fx:id="lblGame" styleClass="game" text="GAME" />
+      <Label fx:id="lblGame" styleClass="game" text="GAME">
+          <VBox.margin>
+            <Insets top="5.0" bottom="10.0" />
+         </VBox.margin>
+      </Label>
       <ImageView fx:id="imgPreview" pickOnBounds="true" preserveRatio="true" styleClass="preview" VBox.vgrow="SOMETIMES" />
+      <BorderPane>
+         <left>
+            <Label fx:id="lblDate" styleClass="date" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Label fx:id="lblDuration" styleClass="duration" BorderPane.alignment="CENTER" />
+         </right>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" top="10.0" bottom="10.0" />
+         </VBox.margin>
+      </BorderPane>
       <JFXButton text="Download" />
    </children>
 </VBox>

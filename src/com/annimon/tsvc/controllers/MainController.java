@@ -8,6 +8,8 @@ import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -24,6 +26,8 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 public class MainController implements Initializable {
+    
+    private static final DateFormat DATE_FORMAT = SimpleDateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
     
     @FXML
     private VBox root;
@@ -61,6 +65,12 @@ public class MainController implements Initializable {
                 
                 final ImageView imgPreview = (ImageView) node.lookup("#imgPreview");
                 asyncLoadImage(imgPreview, video.getPreviewUrl());
+                
+                final Label lblDate = (Label) node.lookup("#lblDate");
+                lblDate.setText(DATE_FORMAT.format(video.getDate()));
+                
+                final Label lblDuration = (Label) node.lookup("#lblDuration");
+                lblDuration.setText(video.getDuraton());
                 
                 broadcastsPane.getChildren().add(node);
             } catch (IOException ex) {

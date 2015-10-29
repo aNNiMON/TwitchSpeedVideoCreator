@@ -1,5 +1,9 @@
 package com.annimon.tsvc.model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.json.JSONObject;
 
 /**
@@ -8,6 +12,8 @@ import org.json.JSONObject;
  */
 public final class TwitchVideo {
 
+    private static final DateFormat DATE_FORMAT = SimpleDateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    
     private String title;
     private String description;
     private int broadcastId;
@@ -17,6 +23,9 @@ public final class TwitchVideo {
     private int length;
     private String previewUrl;
     private String url;
+    
+    private Date date;
+    private String duraton;
 
     public TwitchVideo() {
     }
@@ -29,8 +38,10 @@ public final class TwitchVideo {
         if (_id.startsWith("v")) _id = _id.substring(1);
         id = Integer.parseInt(_id);
         recordedAt = json.getString("recorded_at");
+        date = date(recordedAt);
         game = json.getString("game");
         length = json.getInt("length");
+        duraton = duration(length);
         previewUrl = json.getString("preview");
         url = json.getString("url");
     }
@@ -41,8 +52,10 @@ public final class TwitchVideo {
         this.broadcastId = broadcastId;
         this.id = id;
         this.recordedAt = recordedAt;
+        date = date(recordedAt);
         this.game = game;
         this.length = length;
+        duraton = duration(length);
         this.previewUrl = previewUrl;
         this.url = url;
     }
@@ -85,6 +98,11 @@ public final class TwitchVideo {
 
     public void setRecordedAt(String recordedAt) {
         this.recordedAt = recordedAt;
+        date = date(recordedAt);
+    }
+    
+    public Date getDate() {
+        return date;
     }
 
     public String getGame() {
@@ -98,9 +116,14 @@ public final class TwitchVideo {
     public int getLength() {
         return length;
     }
-
+    
     public void setLength(int length) {
         this.length = length;
+        duraton = duration(length);
+    }
+    
+    public String getDuraton() {
+        return duraton;
     }
 
     public String getPreviewUrl() {
@@ -118,7 +141,22 @@ public final class TwitchVideo {
     public void setUrl(String url) {
         this.url = url;
     }
+    
+    private String duration(int len) {
+        final int hours = len / 3600;
+        final int minutes = len / 60 % 60;
+        final int seconds = len % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 
+    private Date date(String recordedAt) {
+        try {
+            return DATE_FORMAT.parse(recordedAt);
+        } catch (ParseException ex) {
+            return new Date();
+        }
+    }
+    
     @Override
     public String toString() {
         return "TwitchVideos{" + "title=" + title + ", description=" + description + ", broadcastId=" + broadcastId + ", id=" + id + ", recordedAt=" + recordedAt + ", game=" + game + ", length=" + length + ", previewUrl=" + previewUrl + ", url=" + url + '}';
