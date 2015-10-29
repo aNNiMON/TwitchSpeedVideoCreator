@@ -3,11 +3,14 @@ package com.annimon.tsvc.controllers;
 import com.annimon.tsvc.ExceptionHandler;
 import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.PastBroadcastsTask;
+import com.annimon.tsvc.tasks.PlaylistTask;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -47,6 +50,7 @@ public class MainController implements Initializable {
         broadcastsTask.setOnSucceeded(e -> onBroadcastsReceived(broadcastsTask.getValue()));
         progressBar.setProgress(-1);
         progressBar.visibleProperty().bind(broadcastsTask.runningProperty());
+        progressBar.lookup(".bar").setStyle("-fx-stroke: #4CAF50;");
         btnShowBroadcasts.disableProperty().bind(broadcastsTask.runningProperty());
         new Thread(broadcastsTask).start();
     }
@@ -72,6 +76,9 @@ public class MainController implements Initializable {
                 final Label lblDuration = (Label) node.lookup("#lblDuration");
                 lblDuration.setText(video.getDuraton());
                 
+                final JFXButton btnDownload = (JFXButton) node.lookup("#btnDownload");
+                btnDownload.setOnAction((e -> download(video)));
+                
                 broadcastsPane.getChildren().add(node);
             } catch (IOException ex) {
                 ExceptionHandler.log(ex);
@@ -90,6 +97,17 @@ public class MainController implements Initializable {
         };
         loadImageTask.setOnSucceeded(e -> imageView.setImage(loadImageTask.getValue()));
         new Thread(loadImageTask).start();
+    }
+    
+    private void download(TwitchVideo video) {
+        final String vodId = Integer.toString(video.getId());
+        final Path playlistPath = Paths.get(vodId + ".m3u8");
+        
+        final PlaylistTask task = new PlaylistTask(vodId, playlistPath);
+        progressBar.setProgress(-1);
+        progressBar.visibleProperty().bind(task.runningProperty());
+        progressBar.lookup(".bar").setStyle("-fx-stroke: #FFEB3B;");
+        new Thread(task).start();
     }
     
     @Override
