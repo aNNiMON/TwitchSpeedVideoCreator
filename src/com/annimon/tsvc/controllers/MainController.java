@@ -107,7 +107,7 @@ public class MainController implements Initializable {
     
     private void download(TwitchVideo video) {
         final Stage downloadStage = new Stage();
-        downloadStage.setTitle( String.format("%s. %s", tfChannel.getText(), video.getDescription()) );
+        downloadStage.setTitle( String.format("%s. %s", tfChannel.getText(), video.getTitle()) );
         downloadStage.initOwner(application.getPrimaryStage());
         try {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Download.fxml"));
