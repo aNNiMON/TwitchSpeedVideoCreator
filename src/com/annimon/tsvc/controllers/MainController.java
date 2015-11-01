@@ -4,14 +4,11 @@ import com.annimon.tsvc.ExceptionHandler;
 import com.annimon.tsvc.MainApp;
 import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.PastBroadcastsTask;
-import com.annimon.tsvc.tasks.PlaylistTask;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXTextField;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,11 +20,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class MainController implements Initializable {
     
@@ -107,14 +106,19 @@ public class MainController implements Initializable {
     }
     
     private void download(TwitchVideo video) {
-        final String vodId = Integer.toString(video.getId());
-        final Path playlistPath = Paths.get(vodId + ".m3u8");
-        
-        final PlaylistTask task = new PlaylistTask(vodId, playlistPath);
-        progressBar.setProgress(-1);
-        progressBar.visibleProperty().bind(task.runningProperty());
-        progressBar.lookup(".bar").setStyle("-fx-stroke: #FFEB3B;");
-        new Thread(task).start();
+        final Stage downloadStage = new Stage();
+        downloadStage.setTitle( String.format("%s. %s", tfChannel.getText(), video.getDescription()) );
+        downloadStage.initOwner(application.getPrimaryStage());
+        try {
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Download.fxml"));
+            final Scene scene = new Scene(loader.load());
+            final DownloadController controller = (DownloadController) loader.getController();
+            controller.setVideo(video);
+            downloadStage.setScene(scene);
+        } catch (IOException ex) {
+            ExceptionHandler.log(ex);
+        }
+        downloadStage.show();
     }
     
     @Override
