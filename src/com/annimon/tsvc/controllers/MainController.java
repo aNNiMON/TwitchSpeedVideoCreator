@@ -1,6 +1,7 @@
 package com.annimon.tsvc.controllers;
 
 import com.annimon.tsvc.ExceptionHandler;
+import com.annimon.tsvc.MainApp;
 import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.PastBroadcastsTask;
 import com.annimon.tsvc.tasks.PlaylistTask;
@@ -42,6 +43,12 @@ public class MainController implements Initializable {
     private JFXProgressBar progressBar;
     @FXML
     private TilePane broadcastsPane;
+    
+    private MainApp application;
+    
+    public void setApplication(MainApp application) {
+        this.application = application;
+    }
     
     @FXML
     private void handleShowBroadcasts(ActionEvent event) {
