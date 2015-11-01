@@ -1,5 +1,6 @@
 package com.annimon.tsvc.controllers;
 
+import com.annimon.tsvc.Util;
 import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.PlaylistTask;
 import com.jfoenix.controls.JFXButton;
@@ -60,6 +61,7 @@ public class DownloadController implements Initializable {
 
     public void setVideo(TwitchVideo video) {
         this.video = video;
+        updateResultLength();
     }
     
     @FXML
@@ -77,5 +79,18 @@ public class DownloadController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cbFormats.getItems().addAll(new Label("mp4 (best)"), new Label("avi"), new Label("ts"));
-    } 
+        slSpeed.valueProperty().addListener(e ->updateResultLength());
+    }
+    
+    private void updateResultLength() {
+        final int value = (int) slSpeed.getValue();
+        lblResultInfo.setText(calculateResultLength(value));
+    }
+
+    private String calculateResultLength(int speedFactor) {
+        if (video == null) return String.format("%dx", (int) speedFactor);
+        
+        final int resultDuration = (int)(video.getLength() / speedFactor);
+        return String.format("%dx %s", (int) speedFactor, Util.duration(resultDuration));
+    }
 }

@@ -55,4 +55,11 @@ public final class Util {
         }
         return response.toString();
     }
+    
+    public static String duration(int len) {
+        final int hours = len / 3600;
+        final int minutes = len / 60 % 60;
+        final int seconds = len % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }

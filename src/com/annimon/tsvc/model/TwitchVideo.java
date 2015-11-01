@@ -1,5 +1,6 @@
 package com.annimon.tsvc.model;
 
+import com.annimon.tsvc.Util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,7 +42,7 @@ public final class TwitchVideo {
         date = date(recordedAt);
         game = json.getString("game");
         length = json.getInt("length");
-        duraton = duration(length);
+        duraton = Util.duration(length);
         previewUrl = json.getString("preview");
         url = json.getString("url");
     }
@@ -55,7 +56,7 @@ public final class TwitchVideo {
         date = date(recordedAt);
         this.game = game;
         this.length = length;
-        duraton = duration(length);
+        duraton = Util.duration(length);
         this.previewUrl = previewUrl;
         this.url = url;
     }
@@ -119,7 +120,7 @@ public final class TwitchVideo {
     
     public void setLength(int length) {
         this.length = length;
-        duraton = duration(length);
+        duraton = Util.duration(length);
     }
     
     public String getDuraton() {
@@ -142,13 +143,6 @@ public final class TwitchVideo {
         this.url = url;
     }
     
-    private String duration(int len) {
-        final int hours = len / 3600;
-        final int minutes = len / 60 % 60;
-        final int seconds = len % 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    }
-
     private Date date(String recordedAt) {
         try {
             return DATE_FORMAT.parse(recordedAt);
