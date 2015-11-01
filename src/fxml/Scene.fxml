@@ -14,7 +14,7 @@
          <children>
             <Label minWidth="-Infinity" text="Channel:" />
             <JFXTextField fx:id="tfChannel" minWidth="80.0" HBox.hgrow="SOMETIMES" />
-            <JFXButton fx:id="btnShowBroadcasts" minWidth="-Infinity" onAction="#handleShowBroadcasts" text="Show broadcasts" HBox.hgrow="NEVER" />
+            <JFXButton fx:id="btnShowBroadcasts" minWidth="-Infinity" onAction="#handleShowBroadcasts" defaultButton="true"  text="Show broadcasts" HBox.hgrow="NEVER" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
