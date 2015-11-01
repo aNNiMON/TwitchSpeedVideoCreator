@@ -70,15 +70,18 @@ public class DownloadController implements Initializable {
         final Path playlistPath = Paths.get(vodId + ".m3u8");
 
         final PlaylistTask task = new PlaylistTask(vodId, playlistPath);
-        progressBar.setProgress(-1);
         progressBar.visibleProperty().bind(task.runningProperty());
-        progressBar.lookup(".bar").setStyle("-fx-stroke: #FFEB3B;");
+        progressBar.setProgress(-1);
+        progressBar.progressProperty().bind(task.progressProperty());
+        progressBar.lookup(".bar").setStyle("-fx-stroke: #6441A5;");
         new Thread(task).start();
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cbFormats.getItems().addAll(new Label("mp4 (best)"), new Label("avi"), new Label("ts"));
+        progressBar.setProgress(-1);
+        progressBar.prefWidthProperty().bind(root.widthProperty());
         slSpeed.valueProperty().addListener(e ->updateResultLength());
     }
     
