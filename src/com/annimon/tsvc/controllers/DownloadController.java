@@ -97,7 +97,9 @@ public class DownloadController implements Initializable {
         final Path playlistPath = Paths.get(vodId + ".m3u8");
         task = new TaskJoiner(
                 new PlaylistTask(vodId, playlistPath),
-                new FFmpegTask(buildFFmpegOptions(playlistPath)) );
+                new FFmpegTask(buildFFmpegOptions(playlistPath))
+                        .setResultLength((int)(video.getLength() / (int) slSpeed.getValue()))
+        );
         progressBar.visibleProperty().bind(task.runningProperty());
         progressBar.progressProperty().unbind();
         progressBar.setProgress(-1);
@@ -138,7 +140,7 @@ public class DownloadController implements Initializable {
     }
 
     private String calculateResultLength(int speedFactor) {
-        if (video == null) return String.format("%dx", (int) speedFactor);
+        if (video == null) return String.format("%dx", speedFactor);
         
         final int resultDuration = (int)(video.getLength() / speedFactor);
         return String.format("%dx %s", (int) speedFactor, Util.duration(resultDuration));

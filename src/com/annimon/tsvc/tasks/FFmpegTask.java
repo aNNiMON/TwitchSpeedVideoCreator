@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Video processing task.
@@ -14,10 +16,18 @@ import java.util.Scanner;
  */
 public final class FFmpegTask extends PartialTask<Boolean> {
     
+    private static final Pattern FFMPEG_LINE = Pattern.compile(".*time=(\\d{2}):(\\d{2}):(\\d{2})\\.\\d{2}.*");
+    
     private final FFmpegOptions fFmpegOptions;
+    private int resultLength;
 
     public FFmpegTask(FFmpegOptions fFmpegOptions) {
         this.fFmpegOptions = fFmpegOptions;
+    }
+    
+    public FFmpegTask setResultLength(int resultLength) {
+        this.resultLength = resultLength;
+        return this;
     }
     
     @Override
@@ -43,11 +53,24 @@ public final class FFmpegTask extends PartialTask<Boolean> {
                 break;
             }
             final String line = out.nextLine();
+            calculateProgress(line);
             updateMessage(line);
         }
+        
         ffmpeg.waitFor();
         updateMessage("FFmpeg stopped");
         return true;
+    }
+
+    private void calculateProgress(final String line) throws NumberFormatException {
+        final Matcher matcher = FFMPEG_LINE.matcher(line);
+        if (matcher.matches()) {
+            final int hour = Integer.parseInt(matcher.group(1));
+            final int minute = Integer.parseInt(matcher.group(2));
+            final int second = Integer.parseInt(matcher.group(3));
+            final int seconds = (hour * 3600) + (minute * 60) + second;
+            updateProgress(seconds, resultLength);
+        }
     }
 
     private void deleteOutputIfExists() {
