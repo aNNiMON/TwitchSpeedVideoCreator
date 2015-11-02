@@ -20,8 +20,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 
 /**
- * FXML Controller class
- *
  * @author aNNiMON
  */
 public class DownloadController implements Initializable {
@@ -61,7 +59,7 @@ public class DownloadController implements Initializable {
 
     public void setVideo(TwitchVideo video) {
         this.video = video;
-        updateResultLength();
+        onSpeedSliderChanged();
     }
     
     @FXML
@@ -71,9 +69,11 @@ public class DownloadController implements Initializable {
 
         final PlaylistTask task = new PlaylistTask(vodId, playlistPath);
         progressBar.visibleProperty().bind(task.runningProperty());
+        progressBar.progressProperty().unbind();
         progressBar.setProgress(-1);
         progressBar.progressProperty().bind(task.progressProperty());
         progressBar.lookup(".bar").setStyle("-fx-stroke: #6441A5;");
+        task.messageProperty().addListener(e -> taStatus.setText(taStatus.getText() + "\n" + task.getMessage()));
         new Thread(task).start();
     }
     
@@ -82,12 +82,15 @@ public class DownloadController implements Initializable {
         cbFormats.getItems().addAll(new Label("mp4 (best)"), new Label("avi"), new Label("ts"));
         progressBar.setProgress(-1);
         progressBar.prefWidthProperty().bind(root.widthProperty());
-        slSpeed.valueProperty().addListener(e ->updateResultLength());
+        slSpeed.valueProperty().addListener(e -> onSpeedSliderChanged());
     }
     
-    private void updateResultLength() {
+    private void onSpeedSliderChanged() {
         final int value = (int) slSpeed.getValue();
         lblResultInfo.setText(calculateResultLength(value));
+        // Disable audio for >= 2x
+        cbAudio.setDisable(value >= 2);
+        if (value >= 2) cbAudio.setSelected(false);
     }
 
     private String calculateResultLength(int speedFactor) {

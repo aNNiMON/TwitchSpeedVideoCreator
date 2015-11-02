@@ -28,12 +28,16 @@ public final class PlaylistTask extends Task<Void> {
     
     @Override
     public Void call() throws Exception {
+        updateMessage("Retrieving token");
         final JSONObject token = getToken(vodId);
+        
+        updateMessage("Retrieving playlist");
         final String playlist = getPlaylist(vodId, token.getString("token"), token.getString("sig"));
         final String m3u8url = getM3U8Url(playlist);
         if (!m3u8url.contains("/")) throw new RuntimeException("Invalid url path");
         final String urlPart = m3u8url.substring(0, m3u8url.lastIndexOf('/') + 1);
         
+        updateMessage("Creating full m3u8 playlist");
         final String content = Util.getContent(m3u8url);
         final List<String> lines = Stream.of(content.split(Util.NEW_LINE))
                 .map(line -> {
@@ -42,6 +46,8 @@ public final class PlaylistTask extends Task<Void> {
                     return urlPart + line.trim();
                 })
                 .collect(Collectors.toList());
+        
+        updateMessage("Writing playlist to " + destFile);
         Files.write(destFile, lines);
         return null;
     }
