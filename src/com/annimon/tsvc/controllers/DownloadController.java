@@ -5,6 +5,7 @@ import com.annimon.tsvc.Notification;
 import com.annimon.tsvc.Util;
 import com.annimon.tsvc.model.FFmpegOptions;
 import com.annimon.tsvc.model.TwitchVideo;
+import com.annimon.tsvc.tasks.FFmpegCheckingTask;
 import com.annimon.tsvc.tasks.FFmpegTask;
 import com.annimon.tsvc.tasks.PlaylistTask;
 import com.annimon.tsvc.tasks.TaskJoiner;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -128,6 +130,7 @@ public class DownloadController implements Initializable {
         
         final String userDir = System.getProperty("user.dir");
         btnSaveTo.setText(userDir);
+        checkFFmpegExists(userDir);
         
         directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(new File(userDir));
@@ -140,15 +143,22 @@ public class DownloadController implements Initializable {
         progressBar.prefWidthProperty().bind(root.widthProperty());
         
         slSpeed.valueProperty().addListener(e -> onSpeedSliderChanged());
-        
-        if (!Util.isFFmpegExists()) {
+    }
+
+    private void checkFFmpegExists(final String userDir) {
+        final FFmpegCheckingTask checkFFmpegExists = new FFmpegCheckingTask();
+        checkFFmpegExists.setOnSucceeded(event -> {
+            if (checkFFmpegExists.getValue()) return;
+            
             taStatus.setWrapText(true);
             taStatus.setText("For download and process video files you need download ffmpeg"
                     + " and place executable in your PATH or in " + userDir + " folder. "
                     + "Then reopen this window.");
             btnDownload.setText("Download ffmpeg");
-            btnDownload.setOnAction(e -> application.getHostServices().showDocument("https://www.ffmpeg.org/download.html"));
-        }
+            btnDownload.setOnAction(e -> application.getHostServices()
+                    .showDocument("https://www.ffmpeg.org/download.html"));
+        });
+        new Thread(checkFFmpegExists).start();
     }
     
     public void onCloseRequest(WindowEvent event) {

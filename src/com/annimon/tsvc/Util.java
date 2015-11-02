@@ -66,8 +66,8 @@ public final class Util {
     public static boolean isFFmpegExists() {
         try {
             Process ffmpeg = Runtime.getRuntime().exec("ffmpeg -version");
-            return (ffmpeg.exitValue() == 0);
-        } catch (IOException ex) {
+            return (ffmpeg.waitFor() == 0);
+        } catch (InterruptedException | IOException ex) {
             return false;
         }
     }
