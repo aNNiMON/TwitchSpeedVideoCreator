@@ -8,40 +8,51 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="root" alignment="TOP_CENTER" prefHeight="349.0" prefWidth="498.0" styleClass="main_box" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.annimon.tsvc.controllers.DownloadController">
-   <children>
-      <GridPane maxHeight="200.0" minHeight="150.0" VBox.vgrow="ALWAYS">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
-          <ColumnConstraints hgrow="SOMETIMES" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label minWidth="-Infinity" text="Speed:" GridPane.rowIndex="2" />
-            <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <children>
-                  <Label fx:id="lblResultInfo" text="1x" />
-                  <JFXSlider fx:id="slSpeed" min="1.0" minWidth="80.0" value="1.0" />
-               </children>
-            </VBox>
-            <Label layoutX="20.0" layoutY="38.0" minWidth="-Infinity" text="Save to:" />
-            <JFXButton fx:id="btnSaveTo" onAction="#handleSaveTo" GridPane.columnIndex="1" />
-            <Label layoutX="20.0" layoutY="27.0" minWidth="-Infinity" text="Format:" GridPane.rowIndex="1" />
-            <JFXComboBox fx:id="cbFormats" promptText="Select format" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label layoutX="10.0" layoutY="37.0" minWidth="-Infinity" text="Audio:" GridPane.rowIndex="3" />
-            <JFXCheckBox fx:id="cbAudio" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-         </children>
-         <VBox.margin>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-         </VBox.margin>
-      </GridPane>
-      <JFXButton fx:id="btnDownload" minWidth="-Infinity" onAction="#handleDownload" text="Download" />
-      <TextArea fx:id="taStatus" editable="false" VBox.vgrow="SOMETIMES" />
-      <JFXProgressBar fx:id="progressBar" minHeight="10.0" progress="0.49" styleClass="progress_bar" visible="false" VBox.vgrow="SOMETIMES" />
-   </children>
-</VBox>
+<StackPane prefHeight="349.0" prefWidth="498.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.annimon.tsvc.controllers.DownloadController">
+    <VBox fx:id="root" alignment="TOP_CENTER">
+       <children>
+
+          <GridPane maxHeight="200.0" minHeight="150.0" VBox.vgrow="ALWAYS">
+            <columnConstraints>
+              <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+              <ColumnConstraints hgrow="SOMETIMES" />
+            </columnConstraints>
+            <rowConstraints>
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+             <children>
+                <Label minWidth="-Infinity" text="Speed:" GridPane.rowIndex="2" />
+                <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                   <children>
+                      <Label fx:id="lblResultInfo" text="1x" />
+                      <JFXSlider fx:id="slSpeed" min="1.0" minWidth="80.0" value="1.0" />
+                   </children>
+                </VBox>
+                <Label layoutX="20.0" layoutY="38.0" minWidth="-Infinity" text="Save to:" />
+                <JFXButton fx:id="btnSaveTo" onAction="#handleSaveTo" GridPane.columnIndex="1" />
+                <Label layoutX="20.0" layoutY="27.0" minWidth="-Infinity" text="Format:" GridPane.rowIndex="1" />
+                <JFXComboBox fx:id="cbFormats" promptText="Select format" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label layoutX="10.0" layoutY="37.0" minWidth="-Infinity" text="Audio:" GridPane.rowIndex="3" />
+                <JFXCheckBox fx:id="cbAudio" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+             </children>
+             <VBox.margin>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+             </VBox.margin>
+          </GridPane>
+
+          <JFXButton fx:id="btnDownload" maxWidth="1.7976931348623157E308" onAction="#handleDownload" text="Download" />
+          <TextArea fx:id="taStatus" editable="false" VBox.vgrow="SOMETIMES" />
+          <JFXProgressBar fx:id="progressBar" styleClass="progress_bar" visible="false" VBox.vgrow="SOMETIMES" />
+
+       </children>
+    </VBox>
+    
+    <VBox fx:id="notificationBox" maxHeight="-Infinity" maxWidth="-Infinity" styleClass="notificationBox" visible="false" StackPane.alignment="BOTTOM_CENTER">
+      <children>
+         <Label fx:id="notificationLabel" styleClass="notificationLabel" textAlignment="CENTER" />
+      </children>
+   </VBox>
+</StackPane>

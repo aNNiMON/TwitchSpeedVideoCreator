@@ -112,6 +112,7 @@ public class MainController implements Initializable {
         try {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Download.fxml"));
             final Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add("/styles/Notification.css");
             final DownloadController controller = (DownloadController) loader.getController();
             controller.setApplication(application);
             controller.setVideo(video);

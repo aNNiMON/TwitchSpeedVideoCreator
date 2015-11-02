@@ -1,6 +1,7 @@
 package com.annimon.tsvc.controllers;
 
 import com.annimon.tsvc.MainApp;
+import com.annimon.tsvc.Notification;
 import com.annimon.tsvc.Util;
 import com.annimon.tsvc.model.FFmpegOptions;
 import com.annimon.tsvc.model.TwitchVideo;
@@ -58,6 +59,12 @@ public class DownloadController implements Initializable {
     @FXML
     private JFXProgressBar progressBar;
     
+    @FXML
+    private VBox notificationBox;
+
+    @FXML
+    private Label notificationLabel;
+    
     private TwitchVideo video;
     private DirectoryChooser directoryChooser;
     private TaskJoiner task;
@@ -111,11 +118,14 @@ public class DownloadController implements Initializable {
             taStatus.setScrollTop(Double.MAX_VALUE);
         });
         task.runningProperty().addListener(e -> btnDownload.setText(task.isRunning() ? "Cancel" : "Download"));
+        task.setOnSucceeded(e -> Notification.success("Operation successfully complete!"));
         new Thread(task).start();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Notification.init(notificationBox, notificationLabel);
+        
         final String userDir = System.getProperty("user.dir");
         btnSaveTo.setText(userDir);
         
@@ -134,6 +144,7 @@ public class DownloadController implements Initializable {
     
     public void onCloseRequest(WindowEvent event) {
         if (task != null && task.isRunning()) {
+            Notification.error("Task is running. Cancel it or wait until it done to close this window.");
             event.consume();
         }
     }

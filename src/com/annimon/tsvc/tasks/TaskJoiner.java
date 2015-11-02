@@ -28,27 +28,27 @@ public final class TaskJoiner extends Task<Boolean> implements TaskListener<Bool
 
     @Override
     public void updateTaskValue(Boolean value) {
-        super.updateValue(value);
+        updateValue(value);
     }
 
     @Override
     public void updateTaskTitle(String title) {
-        super.updateTitle(title);
+        updateTitle(title);
     }
 
     @Override
     public void updateTaskMessage(String message) {
-        super.updateMessage(message);
+        updateMessage(message);
     }
 
     @Override
     public void updateTaskProgress(double workDone, double max) {
-        super.updateProgress(workDone, max);
+        updateProgress(workDone, max);
     }
 
     @Override
     public void updateTaskProgress(long workDone, long max) {
-        super.updateProgress(workDone, max);
+        updateProgress(workDone, max);
     }
 
     @Override
