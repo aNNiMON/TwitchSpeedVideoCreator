@@ -1,5 +1,11 @@
 package com.annimon.tsvc.model;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * FFmpeg command line options
  * 
@@ -60,13 +66,34 @@ public final class FFmpegOptions {
         final StringBuilder sb = new StringBuilder();
         sb.append(" -i ").append('"').append(input).append('"');
         if (speedFactor < 1d) {
-            sb.append(" -filter:v ").append('"').append("setpts=").append(speedFactor).append("*PTS").append('"');
+            sb.append(" -filter:v ").append(speedFactorFormat());
         }
         if (!isAudio) {
             sb.append(" -an");
         }
         sb.append(' ').append('"').append(output).append('"');
         return sb.toString();
+    }
+    
+    public List<String> buildOptionsAsList() {
+        final List<String> args = new ArrayList<>(10);
+        args.add("-i");
+        args.add(input);
+        if (speedFactor < 1d) {
+            args.add("-filter:v");
+            args.add(speedFactorFormat());
+        }
+        if (!isAudio) {
+            args.add("-an");
+        }
+        args.add(output);
+        return args;
+    }
+    
+    private String speedFactorFormat() {
+        return String.format("\"setpts=%s*PTS\"", 
+                new DecimalFormat("#.#####", DecimalFormatSymbols.getInstance(Locale.ENGLISH))
+                        .format(speedFactor));
     }
 
     @Override
