@@ -30,9 +30,9 @@
                </children>
             </VBox>
             <Label layoutX="20.0" layoutY="38.0" minWidth="-Infinity" text="Save to:" />
-            <JFXButton fx:id="btnSaveTo" text="E:\MOBILE\Cloud\Dropbox\Temp" GridPane.columnIndex="1" />
+            <JFXButton fx:id="btnSaveTo" onAction="#handleSaveTo" GridPane.columnIndex="1" />
             <Label layoutX="20.0" layoutY="27.0" minWidth="-Infinity" text="Format:" GridPane.rowIndex="1" />
-            <JFXComboBox fx:id="cbFormats" promptText="mp4" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <JFXComboBox fx:id="cbFormats" promptText="Select format" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label layoutX="10.0" layoutY="37.0" minWidth="-Infinity" text="Audio:" GridPane.rowIndex="3" />
             <JFXCheckBox fx:id="cbAudio" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>

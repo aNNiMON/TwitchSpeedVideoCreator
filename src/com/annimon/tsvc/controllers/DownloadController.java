@@ -1,6 +1,8 @@
 package com.annimon.tsvc.controllers;
 
+import com.annimon.tsvc.MainApp;
 import com.annimon.tsvc.Util;
+import com.annimon.tsvc.model.FFmpegOptions;
 import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.PlaylistTask;
 import com.jfoenix.controls.JFXButton;
@@ -8,6 +10,7 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXProgressBar;
 import com.jfoenix.controls.JFXSlider;
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
 
 /**
  * @author aNNiMON
@@ -52,6 +56,13 @@ public class DownloadController implements Initializable {
     private JFXProgressBar progressBar;
     
     private TwitchVideo video;
+    private DirectoryChooser directoryChooser;
+    
+    private MainApp application;
+    
+    public void setApplication(MainApp application) {
+        this.application = application;
+    }
 
     public TwitchVideo getVideo() {
         return video;
@@ -60,6 +71,15 @@ public class DownloadController implements Initializable {
     public void setVideo(TwitchVideo video) {
         this.video = video;
         onSpeedSliderChanged();
+    }
+    
+    @FXML
+    private void handleSaveTo(ActionEvent event) {
+        final File dir = directoryChooser.showDialog(application.getPrimaryStage());
+        if (dir != null) {
+            directoryChooser.setInitialDirectory(dir);
+            btnSaveTo.setText(dir.getAbsolutePath());
+        }
     }
     
     @FXML
@@ -79,9 +99,19 @@ public class DownloadController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cbFormats.getItems().addAll(new Label("mp4 (best)"), new Label("avi"), new Label("ts"));
+        final String userDir = System.getProperty("user.dir");
+        btnSaveTo.setText(userDir);
+        
+        directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File(userDir));
+        directoryChooser.setTitle("Select folder to save");
+        
+        cbFormats.getItems().addAll(new Label("mp4"), new Label("avi"), new Label("ts"));
+        cbFormats.setValue(cbFormats.getItems().get(0));
+        
         progressBar.setProgress(-1);
         progressBar.prefWidthProperty().bind(root.widthProperty());
+        
         slSpeed.valueProperty().addListener(e -> onSpeedSliderChanged());
     }
     
@@ -98,5 +128,17 @@ public class DownloadController implements Initializable {
         
         final int resultDuration = (int)(video.getLength() / speedFactor);
         return String.format("%dx %s", (int) speedFactor, Util.duration(resultDuration));
+    }
+    
+    private double getSpeedFactor() {
+        final int value = (int) slSpeed.getValue();
+        return 1d / value;
+    }
+    
+    private String getFormat() {
+        final String path = btnSaveTo.getText();
+        final String filename = Integer.toString(video.getId());
+        final String ext = cbFormats.getValue().getText();
+        return String.format("%s/%s.%s", path, filename, ext);
     }
 }

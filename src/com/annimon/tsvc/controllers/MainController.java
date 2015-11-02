@@ -113,6 +113,7 @@ public class MainController implements Initializable {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Download.fxml"));
             final Scene scene = new Scene(loader.load());
             final DownloadController controller = (DownloadController) loader.getController();
+            controller.setApplication(application);
             controller.setVideo(video);
             downloadStage.setScene(scene);
         } catch (IOException ex) {
