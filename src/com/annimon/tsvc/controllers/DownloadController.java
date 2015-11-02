@@ -103,7 +103,10 @@ public class DownloadController implements Initializable {
         progressBar.setProgress(-1);
         progressBar.progressProperty().bind(task.progressProperty());
         progressBar.lookup(".bar").setStyle("-fx-stroke: #6441A5;");
-        task.messageProperty().addListener(e -> taStatus.setText(taStatus.getText() + "\n" + task.getMessage()));
+        task.messageProperty().addListener(e -> {
+            taStatus.setText(taStatus.getText() + "\n" + task.getMessage());
+            taStatus.setScrollTop(Double.MAX_VALUE);
+        });
         task.runningProperty().addListener(e -> btnDownload.setText(task.isRunning() ? "Cancel" : "Download"));
         new Thread(task).start();
     }
