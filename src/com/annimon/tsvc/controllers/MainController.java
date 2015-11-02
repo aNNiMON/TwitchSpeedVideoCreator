@@ -117,6 +117,7 @@ public class MainController implements Initializable {
             controller.setApplication(application);
             controller.setVideo(video);
             downloadStage.setOnCloseRequest(controller::onCloseRequest);
+            application.getPrimaryStage().setOnCloseRequest(controller::onCloseRequest);
             downloadStage.setScene(scene);
         } catch (IOException ex) {
             ExceptionHandler.log(ex);
