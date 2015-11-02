@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javafx.concurrent.Task;
 import org.json.JSONObject;
 
 /**
@@ -16,7 +15,7 @@ import org.json.JSONObject;
  * 
  * @author aNNiMON
  */
-public final class PlaylistTask extends Task<Void> {
+public final class PlaylistTask extends PartialTask<Void> {
     
     private final String vodId;
     private final Path destFile;

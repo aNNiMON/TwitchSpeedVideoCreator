@@ -6,14 +6,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import javafx.concurrent.Task;
 
 /**
  * Video processing task.
  * 
  * @author aNNiMON
  */
-public final class FFmpegTask extends Task<Boolean> {
+public final class FFmpegTask extends PartialTask<Boolean> {
     
     private final FFmpegOptions fFmpegOptions;
 

@@ -4,7 +4,9 @@ import com.annimon.tsvc.MainApp;
 import com.annimon.tsvc.Util;
 import com.annimon.tsvc.model.FFmpegOptions;
 import com.annimon.tsvc.model.TwitchVideo;
+import com.annimon.tsvc.tasks.FFmpegTask;
 import com.annimon.tsvc.tasks.PlaylistTask;
+import com.annimon.tsvc.tasks.TaskJoiner;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
@@ -57,6 +59,7 @@ public class DownloadController implements Initializable {
     
     private TwitchVideo video;
     private DirectoryChooser directoryChooser;
+    private TaskJoiner task;
     
     private MainApp application;
     
@@ -84,19 +87,27 @@ public class DownloadController implements Initializable {
     
     @FXML
     private void handleDownload(ActionEvent event) {
+        // Cancel task if it runs
+        if (task != null && task.isRunning()) {
+            task.cancel();
+            return;
+        }
+        
         final String vodId = Integer.toString(video.getId());
         final Path playlistPath = Paths.get(vodId + ".m3u8");
-
-        final PlaylistTask task = new PlaylistTask(vodId, playlistPath);
+        task = new TaskJoiner(
+                new PlaylistTask(vodId, playlistPath),
+                new FFmpegTask(buildFFmpegOptions(playlistPath)) );
         progressBar.visibleProperty().bind(task.runningProperty());
         progressBar.progressProperty().unbind();
         progressBar.setProgress(-1);
         progressBar.progressProperty().bind(task.progressProperty());
         progressBar.lookup(".bar").setStyle("-fx-stroke: #6441A5;");
         task.messageProperty().addListener(e -> taStatus.setText(taStatus.getText() + "\n" + task.getMessage()));
+        task.runningProperty().addListener(e -> btnDownload.setText(task.isRunning() ? "Cancel" : "Download"));
         new Thread(task).start();
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         final String userDir = System.getProperty("user.dir");
@@ -128,6 +139,15 @@ public class DownloadController implements Initializable {
         
         final int resultDuration = (int)(video.getLength() / speedFactor);
         return String.format("%dx %s", (int) speedFactor, Util.duration(resultDuration));
+    }
+    
+    private FFmpegOptions buildFFmpegOptions(final Path playlistPath) {
+        final FFmpegOptions options = new FFmpegOptions();
+        options.setInput(playlistPath.toString());
+        options.setSpeedFactor(getSpeedFactor());
+        options.setIsAudio(cbAudio.isSelected());
+        options.setOutput(getFormat());
+        return options;
     }
     
     private double getSpeedFactor() {
