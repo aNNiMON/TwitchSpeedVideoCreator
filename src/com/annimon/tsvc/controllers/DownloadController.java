@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.WindowEvent;
 
 /**
  * @author aNNiMON
@@ -129,6 +130,12 @@ public class DownloadController implements Initializable {
         progressBar.prefWidthProperty().bind(root.widthProperty());
         
         slSpeed.valueProperty().addListener(e -> onSpeedSliderChanged());
+    }
+    
+    public void onCloseRequest(WindowEvent event) {
+        if (task != null && task.isRunning()) {
+            event.consume();
+        }
     }
     
     private void onSpeedSliderChanged() {
