@@ -140,6 +140,15 @@ public class DownloadController implements Initializable {
         progressBar.prefWidthProperty().bind(root.widthProperty());
         
         slSpeed.valueProperty().addListener(e -> onSpeedSliderChanged());
+        
+        if (!Util.isFFmpegExists()) {
+            taStatus.setWrapText(true);
+            taStatus.setText("For download and process video files you need download ffmpeg"
+                    + " and place executable in your PATH or in " + userDir + " folder. "
+                    + "Then reopen this window.");
+            btnDownload.setText("Download ffmpeg");
+            btnDownload.setOnAction(e -> application.getHostServices().showDocument("https://www.ffmpeg.org/download.html"));
+        }
     }
     
     public void onCloseRequest(WindowEvent event) {

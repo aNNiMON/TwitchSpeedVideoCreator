@@ -62,4 +62,13 @@ public final class Util {
         final int seconds = len % 60;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
+    
+    public static boolean isFFmpegExists() {
+        try {
+            Process ffmpeg = Runtime.getRuntime().exec("ffmpeg -version");
+            return (ffmpeg.exitValue() == 0);
+        } catch (IOException ex) {
+            return false;
+        }
+    }
 }
