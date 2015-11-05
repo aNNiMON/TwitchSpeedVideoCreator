@@ -18,8 +18,10 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.ResourceBundle;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -108,7 +110,7 @@ public class DownloadController implements Initializable {
         task = new TaskJoiner(
                 new PlaylistTask(vodId, playlistPath),
                 new FFmpegTask(buildFFmpegOptions(playlistPath))
-                        .setResultLength((int)(video.getLength() / (int) slSpeed.getValue()))
+                        .setResultLength(getResultDuration())
         );
         progressBar.visibleProperty().bind(task.runningProperty());
         progressBar.progressProperty().unbind();
@@ -169,18 +171,21 @@ public class DownloadController implements Initializable {
     }
     
     private void onSpeedSliderChanged() {
-        final int value = (int) slSpeed.getValue();
+        final double value = getSliderSpeedValue();
         lblResultInfo.setText(calculateResultLength(value));
-        // Disable audio for >= 2x
-        cbAudio.setDisable(value >= 2);
-        if (value >= 2) cbAudio.setSelected(false);
+        // Audio enabled only for value = 1
+        cbAudio.setDisable(value > 1);
+        if (value > 1) cbAudio.setSelected(false);
     }
 
-    private String calculateResultLength(int speedFactor) {
-        if (video == null) return String.format("%dx", speedFactor);
+    private String calculateResultLength(double speedFactor) {
+        if (video == null) return String.format("%sx", new DecimalFormat("#.##").format(speedFactor));
         
-        final int resultDuration = (int)(video.getLength() / speedFactor);
-        return String.format("%dx %s", (int) speedFactor, Util.duration(resultDuration));
+        return String.format("%sx %s (pts = %s)",
+                new DecimalFormat("#.##").format(speedFactor),
+                Util.duration(getResultDuration()),
+                new DecimalFormat("#.#####", DecimalFormatSymbols.getInstance(Locale.ENGLISH))
+                        .format(getSpeedFactor()));
     }
     
     private FFmpegOptions buildFFmpegOptions(final Path playlistPath) {
@@ -192,9 +197,16 @@ public class DownloadController implements Initializable {
         return options;
     }
     
+    private double getSliderSpeedValue() {
+        return Math.exp(slSpeed.getValue() / 2);
+    }
+    
+    private int getResultDuration() {
+        return (int)(video.getLength() / getSliderSpeedValue());
+    }
+    
     private double getSpeedFactor() {
-        final int value = (int) slSpeed.getValue();
-        return 1d / value;
+        return 1d / getSliderSpeedValue();
     }
     
     private String getFormat() {

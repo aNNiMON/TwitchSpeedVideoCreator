@@ -90,8 +90,6 @@ public class MainController implements Initializable {
                 ExceptionHandler.log(ex);
             }
         }
-        
-        videos.stream().forEach(System.out::println);
     }
     
     private void asyncLoadImage(ImageView imageView, String url) {

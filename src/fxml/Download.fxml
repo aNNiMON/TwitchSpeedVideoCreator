@@ -28,7 +28,7 @@
                 <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                    <children>
                       <Label fx:id="lblResultInfo" text="1x" />
-                      <JFXSlider fx:id="slSpeed" min="1.0" minWidth="80.0" value="1.0" />
+                      <JFXSlider fx:id="slSpeed" min="0.0" value="0.0" max="10.0" minWidth="80.0" />
                    </children>
                 </VBox>
                 <Label layoutX="20.0" layoutY="38.0" minWidth="-Infinity" text="Save to:" />
