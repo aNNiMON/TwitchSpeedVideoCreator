@@ -198,7 +198,17 @@ public class DownloadController implements Initializable {
     }
     
     private double getSliderSpeedValue() {
-        return Math.exp(slSpeed.getValue() / 2);
+        final double exp = Math.exp(slSpeed.getValue() / 2);
+        if (exp < 2) return exp;
+        final int[] steps = {5, 10, 20, 50, 100};
+        for (int step : steps) {
+            if (exp < step) return round(exp, step / 100f);
+        }
+        return round(exp, 2);
+    }
+    
+    public static double round(double input, double step) {
+        return Math.round(input / step) * step;
     }
     
     private int getResultDuration() {
