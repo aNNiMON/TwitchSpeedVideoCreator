@@ -1,13 +1,17 @@
 package com.annimon.tsvc.tasks;
 
+import com.annimon.tsvc.ExceptionHandler;
 import com.annimon.tsvc.Util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -21,12 +25,52 @@ public final class PlaylistTask extends PartialTask<Void> {
     private final Path destFile;
 
     public PlaylistTask(String vodId, Path destFile) {
-        this.vodId = vodId;
+        this.vodId = vodId.startsWith("v") ? vodId.substring(1) : vodId;
         this.destFile = destFile;
     }
     
     @Override
     public Void call() throws Exception {
+        if (vodId.startsWith("a")) {
+            try {
+                newPlaylist();
+            } catch (Exception ex) { 
+                ExceptionHandler.log(ex);
+            }
+        } else {
+            oldPlaylist();
+        }
+        return null;
+    }
+    
+    private void newPlaylist() throws Exception {
+        updateMessage("Retrieving video info");
+        final JSONObject videoInfo = getVideoInfo(vodId);
+        final JSONArray live = videoInfo.getJSONObject("chunks").getJSONArray("live");
+        
+        updateMessage("Creating full m3u8 playlist");
+        final int[] targetDuration = { 0 };
+        final List<String> urls = IntStream.range(0, live.length())
+                .mapToObj(live::getJSONObject)
+                .map(json -> {
+                    final int length = json.getInt("length");
+                    if (length > targetDuration[0]) targetDuration[0] = length;
+                    return "#EXTINF:" + length + ".000,\n" + json.getString("url");
+                })
+                .collect(Collectors.toList());
+        final List<String> lines = new ArrayList<>();
+        lines.add("#EXTM3U");
+        lines.add("#EXT-X-VERSION:3");
+        lines.add("#EXT-X-PLAYLIST-TYPE:EVENT");
+        lines.add("#EXT-X-TARGETDURATION:" + targetDuration[0]);
+        lines.addAll(urls);
+        lines.add("#EXT-X-ENDLIST");
+        
+        updateMessage("Writing playlist to " + destFile);
+        Files.write(destFile, lines);
+    }
+    
+    private void oldPlaylist() throws Exception {
         updateMessage("Retrieving token");
         final JSONObject token = getToken(vodId);
         
@@ -48,13 +92,11 @@ public final class PlaylistTask extends PartialTask<Void> {
         
         updateMessage("Writing playlist to " + destFile);
         Files.write(destFile, lines);
-        return null;
     }
     
     private static JSONObject getToken(String vodId) {
         final String url = "https://api.twitch.tv/api/vods/" + vodId + "/access_token";
-        final String jsonRaw = Util.getContent(url);
-        return new JSONObject(jsonRaw);
+        return jsonFromUrl(url);
     }
     
     private static String getPlaylist(String vodId, String token, String sig) throws UnsupportedEncodingException {
@@ -69,5 +111,15 @@ public final class PlaylistTask extends PartialTask<Void> {
             if (line.startsWith("http")) return line.trim();
         }
         throw new RuntimeException("Unable to get m3u8 playlist");
+    }
+    
+    private static JSONObject getVideoInfo(String vodId) {
+        final String url = "https://api.twitch.tv/api/videos/" + vodId + "?as3=t";
+        return jsonFromUrl(url);
+    }
+    
+    private static JSONObject jsonFromUrl(String url) {
+        final String jsonRaw = Util.getContent(url);
+        return new JSONObject(jsonRaw);
     }
 }
