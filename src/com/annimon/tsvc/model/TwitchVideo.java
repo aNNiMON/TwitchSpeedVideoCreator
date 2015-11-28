@@ -18,7 +18,7 @@ public final class TwitchVideo {
     private String title;
     private String description;
     private int broadcastId;
-    private int id;
+    private String id;
     private String recordedAt;
     private String game;
     private int length;
@@ -35,9 +35,7 @@ public final class TwitchVideo {
         title = json.getString("title");
         description = json.optString("description");
         broadcastId = json.getInt("broadcast_id");
-        String _id = json.getString("_id");
-        if (_id.startsWith("v")) _id = _id.substring(1);
-        id = Integer.parseInt(_id);
+        id = json.getString("_id");
         recordedAt = json.getString("recorded_at");
         date = date(recordedAt);
         game = json.getString("game");
@@ -47,7 +45,7 @@ public final class TwitchVideo {
         url = json.getString("url");
     }
 
-    public TwitchVideo(String title, String description, int broadcastId, int id, String recordedAt, String game, int length, String previewUrl, String url) {
+    public TwitchVideo(String title, String description, int broadcastId, String id, String recordedAt, String game, int length, String previewUrl, String url) {
         this.title = title;
         this.description = description;
         this.broadcastId = broadcastId;
@@ -85,11 +83,11 @@ public final class TwitchVideo {
         this.broadcastId = broadcastId;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

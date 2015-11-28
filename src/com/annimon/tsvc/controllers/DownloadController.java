@@ -105,7 +105,7 @@ public class DownloadController implements Initializable {
             return;
         }
         
-        final String vodId = Integer.toString(video.getId());
+        final String vodId = video.getId();
         final Path playlistPath = Paths.get(vodId + ".m3u8");
         task = new TaskJoiner(
                 new PlaylistTask(vodId, playlistPath),
@@ -211,7 +211,7 @@ public class DownloadController implements Initializable {
     
     private String getFormat() {
         final String path = btnSaveTo.getText();
-        final String filename = Integer.toString(video.getId());
+        final String filename = video.getId();
         final String ext = cbFormats.getValue().getText();
         return String.format("%s/%s.%s", path, filename, ext);
     }
