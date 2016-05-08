@@ -64,6 +64,7 @@ public final class FFmpegOptions {
     
     public String buildOptions() {
         final StringBuilder sb = new StringBuilder();
+        sb.append(" -protocol_whitelist ").append(whitelistProtocols());
         sb.append(" -i ").append('"').append(input).append('"');
         if (speedFactor < 1d) {
             sb.append(" -filter:v ").append(speedFactorFormat());
@@ -77,6 +78,8 @@ public final class FFmpegOptions {
     
     public List<String> buildOptionsAsList() {
         final List<String> args = new ArrayList<>(10);
+        args.add("-protocol_whitelist");
+        args.add(whitelistProtocols());
         args.add("-i");
         args.add(input);
         if (speedFactor < 1d) {
@@ -94,6 +97,10 @@ public final class FFmpegOptions {
         return String.format("\"setpts=%s*PTS\"", 
                 new DecimalFormat("#.#####", DecimalFormatSymbols.getInstance(Locale.ENGLISH))
                         .format(speedFactor));
+    }
+
+    private String whitelistProtocols() {
+        return "file,crypto,tcp,http,https";
     }
 
     @Override
