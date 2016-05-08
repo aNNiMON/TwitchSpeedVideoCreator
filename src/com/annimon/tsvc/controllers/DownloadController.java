@@ -153,7 +153,7 @@ public class DownloadController implements Initializable {
             if (checkFFmpegExists.getValue()) return;
             
             taStatus.setWrapText(true);
-            taStatus.setText("For download and process video files you need download ffmpeg"
+            taStatus.setText("For download and process video files you need ffmpeg"
                     + " and place executable in your PATH or in " + userDir + " folder. "
                     + "Then reopen this window.");
             btnDownload.setText("Download ffmpeg");

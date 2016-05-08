@@ -16,17 +16,17 @@ import java.util.regex.Pattern;
  */
 public final class FFmpegTask extends PartialTask<Boolean> {
     
-    private static final Pattern FFMPEG_LINE = Pattern.compile(".*time=(\\d{2}):(\\d{2}):(\\d{2})\\.\\d{2}.*");
+    private static final Pattern FFMPEG_LINE = Pattern.compile(".*time=(\\d{2}):(\\d{2}):(\\d{2})\\.(\\d{2}).*");
     
     private final FFmpegOptions fFmpegOptions;
-    private int resultLength;
+    private int resultLengthInMillis;
 
     public FFmpegTask(FFmpegOptions fFmpegOptions) {
         this.fFmpegOptions = fFmpegOptions;
     }
     
     public FFmpegTask setResultLength(int resultLength) {
-        this.resultLength = resultLength;
+        this.resultLengthInMillis = resultLength * 1000;
         return this;
     }
     
@@ -68,8 +68,10 @@ public final class FFmpegTask extends PartialTask<Boolean> {
             final int hour = Integer.parseInt(matcher.group(1));
             final int minute = Integer.parseInt(matcher.group(2));
             final int second = Integer.parseInt(matcher.group(3));
+            final int millisecond = Integer.parseInt(matcher.group(4)) * 10;
             final int seconds = (hour * 3600) + (minute * 60) + second;
-            updateProgress(seconds, resultLength);
+            final int millis = seconds * 1000 + millisecond;
+            updateProgress(millis, resultLengthInMillis);
         }
     }
 
