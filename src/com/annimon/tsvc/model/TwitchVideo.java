@@ -32,13 +32,13 @@ public final class TwitchVideo {
     }
     
     public TwitchVideo(JSONObject json) {
-        title = json.getString("title");
+        title = json.optString("title", "Untitled broadcast");
         description = json.optString("description");
         broadcastId = json.getInt("broadcast_id");
         id = json.getString("_id");
         recordedAt = json.getString("recorded_at");
         date = date(recordedAt);
-        game = json.getString("game");
+        game = json.optString("game", "");
         length = json.getInt("length");
         duraton = Util.duration(length);
         previewUrl = json.getString("preview");
