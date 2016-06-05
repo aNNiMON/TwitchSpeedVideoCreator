@@ -4,6 +4,7 @@ import com.annimon.tsvc.MainApp;
 import com.annimon.tsvc.Notification;
 import com.annimon.tsvc.Util;
 import com.annimon.tsvc.model.FFmpegOptions;
+import com.annimon.tsvc.model.OutputFormat;
 import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.FFmpegCheckingTask;
 import com.annimon.tsvc.tasks.FFmpegTask;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -35,7 +37,7 @@ import javafx.stage.WindowEvent;
  * @author aNNiMON
  */
 public class DownloadController implements Initializable {
-    
+
     @FXML
     private VBox root;
     
@@ -49,7 +51,7 @@ public class DownloadController implements Initializable {
     private JFXButton btnSaveTo;
     
     @FXML
-    private JFXComboBox<Label> cbFormats;
+    private JFXComboBox<OutputFormat> cbFormats;
     
     @FXML
     private JFXCheckBox cbAudio;
@@ -68,7 +70,7 @@ public class DownloadController implements Initializable {
 
     @FXML
     private Label notificationLabel;
-    
+
     private TwitchVideo video;
     private DirectoryChooser directoryChooser;
     private TaskJoiner task;
@@ -137,8 +139,8 @@ public class DownloadController implements Initializable {
         directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(new File(userDir));
         directoryChooser.setTitle("Select folder to save");
-        
-        cbFormats.getItems().addAll(new Label("mp4"), new Label("avi"), new Label("ts"));
+
+        cbFormats.getItems().addAll(Arrays.asList(OutputFormat.values()));
         cbFormats.setValue(cbFormats.getItems().get(0));
         
         progressBar.setProgress(-1);
@@ -222,7 +224,7 @@ public class DownloadController implements Initializable {
     private String getFormat() {
         final String path = btnSaveTo.getText();
         final String filename = video.getId();
-        final String ext = cbFormats.getValue().getText();
+        final String ext = cbFormats.getValue().getExtension();
         return String.format("%s/%s.%s", path, filename, ext);
     }
 }
