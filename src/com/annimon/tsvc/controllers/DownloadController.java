@@ -9,6 +9,7 @@ import com.annimon.tsvc.model.TwitchVideo;
 import com.annimon.tsvc.tasks.FFmpegCheckingTask;
 import com.annimon.tsvc.tasks.FFmpegTask;
 import com.annimon.tsvc.tasks.PlaylistTask;
+import com.annimon.tsvc.tasks.QuickDownloadTask;
 import com.annimon.tsvc.tasks.TaskJoiner;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -24,6 +25,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -73,7 +75,7 @@ public class DownloadController implements Initializable {
 
     private TwitchVideo video;
     private DirectoryChooser directoryChooser;
-    private TaskJoiner task;
+    private Task task;
     
     private MainApp application;
     
@@ -109,11 +111,14 @@ public class DownloadController implements Initializable {
         
         final String vodId = video.getId();
         final Path playlistPath = Paths.get(vodId + ".m3u8");
-        task = new TaskJoiner(
+        if (cbFormats.getValue() == OutputFormat.TS_QUICK) {
+            task = new QuickDownloadTask(new PlaylistTask(vodId, playlistPath), btnSaveTo.getText(), 4);
+        } else {
+            task = new TaskJoiner(
                 new PlaylistTask(vodId, playlistPath),
                 new FFmpegTask(buildFFmpegOptions(playlistPath))
-                        .setResultLength(getResultDuration())
-        );
+                        .setResultLength(getResultDuration()));
+        }
         progressBar.visibleProperty().bind(task.runningProperty());
         progressBar.progressProperty().unbind();
         progressBar.setProgress(-1);

@@ -1,6 +1,5 @@
 package com.annimon.tsvc.tasks;
 
-import com.annimon.tsvc.ExceptionHandler;
 import com.annimon.tsvc.Util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -19,7 +18,7 @@ import org.json.JSONObject;
  * 
  * @author aNNiMON
  */
-public final class PlaylistTask extends PartialTask<Void> {
+public final class PlaylistTask extends PartialTask<List<String>> {
     
     private final String vodId;
     private final Path destFile;
@@ -28,22 +27,20 @@ public final class PlaylistTask extends PartialTask<Void> {
         this.vodId = vodId.startsWith("v") ? vodId.substring(1) : vodId;
         this.destFile = destFile;
     }
-    
+
+    public String getVodId() {
+        return vodId;
+    }
+
     @Override
-    public Void call() throws Exception {
+    public List<String> call() throws Exception {
         if (vodId.startsWith("a")) {
-            try {
-                newPlaylist();
-            } catch (Exception ex) { 
-                ExceptionHandler.log(ex);
-            }
-        } else {
-            oldPlaylist();
+            return newPlaylist();
         }
-        return null;
+        return oldPlaylist();
     }
     
-    private void newPlaylist() throws Exception {
+    private List<String> newPlaylist() throws Exception {
         updateMessage("Retrieving video info");
         final JSONObject videoInfo = getVideoInfo(vodId);
         final JSONArray live = videoInfo.getJSONObject("chunks").getJSONArray("live");
@@ -68,9 +65,10 @@ public final class PlaylistTask extends PartialTask<Void> {
         
         updateMessage("Writing playlist to " + destFile);
         Files.write(destFile, lines);
+        return lines;
     }
     
-    private void oldPlaylist() throws Exception {
+    private List<String> oldPlaylist() throws Exception {
         updateMessage("Retrieving token");
         final JSONObject token = getToken(vodId);
         
@@ -92,6 +90,7 @@ public final class PlaylistTask extends PartialTask<Void> {
         
         updateMessage("Writing playlist to " + destFile);
         Files.write(destFile, lines);
+        return lines;
     }
     
     private static JSONObject getToken(String vodId) {

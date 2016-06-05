@@ -2,6 +2,7 @@ package com.annimon.tsvc;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,13 +31,17 @@ public final class Util {
             return "";
         }
     }
-    
+
     public static boolean download(String link, File destFile) {
+        return download(link, destFile, false);
+    }
+    
+    public static boolean download(String link, File destFile, boolean append) {
         try {
             final URL url = new URL(link);
             try ( ReadableByteChannel channel = Channels.newChannel(url.openStream());
-                  FileChannel fileChannel = new FileOutputStream(destFile).getChannel() ) {
-                fileChannel.transferFrom(channel, 0, Long.MAX_VALUE);
+                  FileChannel fileChannel = new FileOutputStream(destFile, append).getChannel() ) {
+                fileChannel.transferFrom(channel, append ? (fileChannel.size()) : 0, Long.MAX_VALUE);
             }
             return true;
         } catch (IOException ex) {
@@ -44,7 +49,17 @@ public final class Util {
             return false;
         }
     }
-    
+
+    public static void joinFiles(File destFile, File additionFile) {
+        try ( FileChannel addChannel = new FileInputStream(additionFile).getChannel();
+              FileChannel destChannel =  new FileOutputStream(destFile, true).getChannel();
+            ) {
+            destChannel.transferFrom(addChannel, destChannel.size(), addChannel.size());
+        } catch (IOException ex) {
+            Logger.getLogger("Util").log(Level.WARNING, "Util.joinFiles", ex);
+        }
+    }
+
     public static String readResponse(InputStream is) throws IOException {
         StringBuilder response = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {

@@ -3,7 +3,8 @@ package com.annimon.tsvc.model;
 public enum OutputFormat {
     MP4("mp4"),
     AVI("avi"),
-    TS("ts");
+    TS("ts"),
+    TS_QUICK("ts", "ts (quick)");
 
     private final String extension, label;
 
