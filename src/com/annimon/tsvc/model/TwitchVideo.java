@@ -15,6 +15,7 @@ public final class TwitchVideo {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     
+    private String channel;
     private String title;
     private String description;
     private int broadcastId;
@@ -32,6 +33,7 @@ public final class TwitchVideo {
     }
     
     public TwitchVideo(JSONObject json) {
+        channel = json.getJSONObject("channel").getString("name");
         title = json.optString("title", "Untitled broadcast");
         description = json.optString("description");
         broadcastId = json.getInt("broadcast_id");
@@ -45,20 +47,14 @@ public final class TwitchVideo {
         url = json.getString("url");
     }
 
-    public TwitchVideo(String title, String description, int broadcastId, String id, String recordedAt, String game, int length, String previewUrl, String url) {
-        this.title = title;
-        this.description = description;
-        this.broadcastId = broadcastId;
-        this.id = id;
-        this.recordedAt = recordedAt;
-        date = date(recordedAt);
-        this.game = game;
-        this.length = length;
-        duraton = Util.duration(length);
-        this.previewUrl = previewUrl;
-        this.url = url;
+    public String getChannel() {
+        return channel;
     }
-    
+
+    public void setChannel(String channel) {
+        this.channel = channel;
+    }
+
     public String getTitle() {
         return title;
     }

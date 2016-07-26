@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -110,7 +111,8 @@ public class DownloadController implements Initializable {
         }
         
         final String vodId = video.getId();
-        final Path playlistPath = Paths.get(vodId + ".m3u8");
+        final String filename = filename(video) + "_" + vodId;
+        final Path playlistPath = Paths.get(filename + ".m3u8");
         if (cbFormats.getValue() == OutputFormat.TS_QUICK) {
             task = new QuickDownloadTask(new PlaylistTask(vodId, playlistPath), btnSaveTo.getText(), 4);
         } else {
@@ -228,8 +230,14 @@ public class DownloadController implements Initializable {
     
     private String getFormat() {
         final String path = btnSaveTo.getText();
-        final String filename = video.getId();
+        final String filename = filename(video);
         final String ext = cbFormats.getValue().getExtension();
         return String.format("%s/%s.%s", path, filename, ext);
+    }
+
+    private String filename(TwitchVideo v) {
+        return String.format("%s_%s",
+                v.getChannel(),
+                new SimpleDateFormat("yyyy-MM-dd").format(v.getDate()));
     }
 }
