@@ -13,7 +13,7 @@ import org.json.JSONObject;
  */
 public final class TwitchVideo {
 
-    private static final DateFormat DATE_FORMAT = SimpleDateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     
     private String title;
     private String description;
