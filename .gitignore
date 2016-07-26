@@ -2,3 +2,13 @@
 /dist/
 /temp/
 *.m3u8
+*.mp4
+*.avi
+*.ts
+/nbproject/private/
+/nbproject/configs/
+/nbproject/UPDATED.TXT
+/nbproject/jfx-impl.xml
+/nbproject/jfx-impl_backup*.xml
+/nbproject/genfiles.properties
+/nbproject/build-impl.xml
